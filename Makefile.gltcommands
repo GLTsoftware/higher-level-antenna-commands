@@ -1,0 +1,31 @@
+#gcc -I/global/include -I/common/include -L/common/lib -o az az.c -ldsm -lpthread -lsmapopt -lrt
+#
+CC = gcc -D LINUX -I$(GLOBALINC) -I$(COMMONINC) -L$(COMMONLIB) 
+CFLAGS = -g -O -Wall
+#LIB = -lrt $(COMMONLIB)/rm.o $(COMMONLIB)/libdsm.a $(COMMONLIB)/commonLib -lcurses -lm
+LIB = -ldsm -lpthread -lsmapopt -lrt
+
+COMMONINC = /common/include/
+COMMONLIB = /common/lib/
+GLOBALINC = /global/include/
+
+SOURCES = az.c el.c stop.c engage.c observe.c 
+
+OBJECTS = az.o el.o stop.o engage.o observe.o
+
+all: az el stop engage observe
+
+clean:
+	rm *.o ./az ./el ./observe ./stop ./engage
+
+#install: all
+#	cp stop $(OBSBIN)/
+#	cp engage $(OBSBIN)/
+
+az: $(OBJECTS) ./Makefile.gltcommands
+	$(CC) -o az $(OBJECTS) $(LIB)
+
+depend: ./Makefile
+	$(CC) -MM $(SOURCES) > dependencies
+
+include dependencies
